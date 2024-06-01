@@ -11,7 +11,7 @@ jobs:
       # Install golang
       - uses: actions/setup-go@v2
         with:
-          go-version: 1.20.0
+          go-version: 1.22
 
       # Checkout to the latest commit
       # On specific directory/path
@@ -57,7 +57,7 @@ jobs:
       - name: Build an image from Dockerfile
         run: |
           docker build -f Dockerfile -t docker.io/litmuschaos/chaos-exporter:${{ github.sha }} . --build-arg TARGETPLATFORM=linux/amd64
-      
+
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
@@ -66,7 +66,7 @@ jobs:
           exit-code: '1'
           ignore-unfixed: true
           vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'                          
+          severity: 'CRITICAL,HIGH'
 
   image-build:
     runs-on: ubuntu-latest
@@ -98,16 +98,16 @@ jobs:
       # Install golang
       - uses: actions/setup-go@v2
         with:
-          go-version: 1.20.0
+          go-version: 1.22
 
       # Checkout to the latest commit
       # On specific directory/path
       - name: Checkout
         uses: actions/checkout@v2
-     
+
       #Install and configure a k3S cluster
       - name: Installing Prerequisites (K3S Cluster)
-        env: 
+        env:
           KUBECONFIG: /etc/rancher/k3s/k3s.yaml
         run: |
           curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=v1.21.11+k3s1 sh -s - --docker --write-kubeconfig-mode 664
@@ -115,7 +115,7 @@ jobs:
           mkdir -p $HOME/.kube
           cp /etc/rancher/k3s/k3s.yaml $HOME/.kube/config
           kubectl get nodes
-          
+
       - name: Dependency checks
         run: |
           make deps
